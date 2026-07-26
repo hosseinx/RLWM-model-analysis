@@ -72,30 +72,54 @@ $$
 The probability of choosing an action is a mixture of the softmax policies of the RL and WM systems:
 
 $$
-P(a|s) = \eta_{bs} \cdot \text{softmax}(W, \beta) + (1 - \eta_{bs}) \cdot \text{softmax}(Q, \beta)
+P(a \mid s) = \eta_{bs} \cdot \pi_{WM}(a \mid s) + (1 - \eta_{bs}) \cdot \pi_{RL}(a \mid s)
 $$
+
+Where each subsystem uses a softmax choice rule:
+
+$$
+\pi_{RL}(a \mid s) = \frac{\exp(\beta \cdot Q(s,a))}{\sum_{a'} \exp(\beta \cdot Q(s,a'))}
+$$
+
+$$
+\pi_{WM}(a \mid s) = \frac{\exp(\beta \cdot W(s,a))}{\sum_{a'} \exp(\beta \cdot W(s,a'))}
+$$
+
+---
 
 ### 4. Auxiliary Mechanisms
 
-* **Forgetting/Decay ($\phi$):** Values decay towards their initial state before each trial update:
-* 
-  $$
-  Q_{t}(s, a) = (1 - \phi) \cdot Q_{t-1}(s, a) + \phi \cdot Q_{init}
-  $$
-  
-* **Perseveration ($pers$):** If the prediction error is negative ($\delta < 0$), the learning rate is reduced:
+**Forgetting / Decay ($\phi$):**
+Before each trial's update, all values decay toward their initial state:
 
-  $$
-  \alpha_{adjusted} = \alpha \cdot (1 - pers)
-  $$
-  
-* **Lapse Rate / Undirected Noise ($\epsilon$):** A proportion of trials are chosen uniformly at random.
-* **Initial Bias ($init$):** Upon the first encounter with a stimulus, the chosen action's Q-value is boosted:
-* 
-  $$
-  Q_{init\_updated}(s, a) = Q_{init} + init \cdot (1 - Q_{init})
-  $$
-  
+$$
+Q_{t}(s, a) = (1 - \phi) \cdot Q_{t-1}(s, a) + \phi \cdot Q_{init}
+$$
+
+$$
+W_{t}(s, a) = (1 - \phi) \cdot W_{t-1}(s, a) + \phi \cdot W_{init}
+$$
+
+**Perseveration ($pers$):**
+When the prediction error is negative ($\delta < 0$), the effective learning rate is reduced:
+
+$$
+\alpha_{eff} = \alpha \cdot (1 - pers)
+$$
+
+**Lapse Rate / Undirected Noise ($\varepsilon$):**
+A proportion $\varepsilon$ of choices are made uniformly at random:
+
+$$
+P_{final}(a \mid s) = (1 - \varepsilon) \cdot P(a \mid s) + \frac{\varepsilon}{|A|}
+$$
+
+**Initial Bias ($init$):**
+Upon the first encounter with a stimulus, the chosen action's Q-value is boosted:
+
+$$
+Q_{updated}(s, a) = Q_{init} + init \cdot (1 - Q_{init})
+$$
 ---
 
 ## 🛠️ Code Structure & Usage
