@@ -120,6 +120,7 @@ Upon the first encounter with a stimulus, the chosen action's Q-value is boosted
 $$
 Q_{updated}(s, a) = Q_{init} + init \cdot (1 - Q_{init})
 $$
+
 ---
 
 ## 🛠️ Code Structure & Usage
