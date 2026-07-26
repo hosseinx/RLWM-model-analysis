@@ -33,31 +33,63 @@ Based on the interactive model proposed by [Collins (2018)](#references). This m
 Below are the core equations derived from the Python implementation:
 
 ### 1. Value Updates (RLWMi & RLWM-C)
+
 **Working Memory (Fast learning):**
 The WM system simply stores the outcome of the most recent trial for a given stimulus-action pair:
-$$ W_{t+1}(s, a) = R_t $$
+
+$$
+W_{t+1}(s, a) = R_t
+$$
 
 **Reinforcement Learning (Incremental learning):**
-$$ Q_{t+1}(s, a) = Q_t(s, a) + \alpha \cdot \delta_t $$
 
-*Note: In **RLWM-C**, $\alpha$ is dynamically selected:*
-$$ \alpha = \begin{cases} \alpha_{congruent} & \text{if trial is congruent} \\ \alpha_{incongruent} & \text{if trial is incongruent} \end{cases} $$
+$$
+Q_{t+1}(s, a) = Q_t(s, a) + \alpha \cdot \delta_t
+$$
+
+*Note: In **RLWM-C**, $\alpha$ is dynamically selected based on congruency:*
+
+$$
+\alpha = 
+\begin{cases} 
+\alpha_{congruent} & \text{if trial is congruent} \\ 
+\alpha_{incongruent} & \text{if trial is incongruent} 
+\end{cases}
+$$
 
 ### 2. Prediction Error (Coupled RLWMi)
+
 In the interacting model, the RL prediction error ($\delta$) is calculated against a weighted combination of RL and WM expectations:
-$$ \delta_t = R_t - \Big[ (1 - \eta_{bs}) \cdot Q_t(s, a) + \eta_{bs} \cdot W_t(s, a) \Big] $$
+
+$$
+\delta_t = R_t - \Big[ (1 - \eta_{bs}) \cdot Q_t(s, a) + \eta_{bs} \cdot W_t(s, a) \Big]
+$$
+
 *(Where $\eta_{bs}$ is $\eta_3$ for set size 3, and $\eta_6$ for set size 6).*
 
 ### 3. Choice Policy (Softmax Mixture)
+
 The probability of choosing an action is a mixture of the softmax policies of the RL and WM systems:
-$$ P(a|s) = \eta_{bs} \cdot \text{softmax}(W, \beta) + (1 - \eta_{bs}) \cdot \text{softmax}(Q, \beta) $$
+
+$$
+P(a|s) = \eta_{bs} \cdot \text{softmax}(W, \beta) + (1 - \eta_{bs}) \cdot \text{softmax}(Q, \beta)
+$$
 
 ### 4. Auxiliary Mechanisms
-* **Forgetting/Decay ($\phi$):** Values decay towards their initial state before each trial update.
-* **Perseveration ($pers$):** If the prediction error is negative ($\delta < 0$), the learning rate is reduced: $\alpha_{adjusted} = \alpha \cdot (1 - pers)$.
-* **Lapse Rate / Undirected Noise ($\epsilon$):** A proportion of trials are chosen uniformly at random.
-* **Initial Bias ($init$):** Upon the first encounter with a stimulus, the chosen action's Q-value is boosted.
 
+* **Forgetting/Decay ($\phi$):** Values decay towards their initial state before each trial update:
+  $$
+  Q_{t}(s, a) = (1 - \phi) \cdot Q_{t-1}(s, a) + \phi \cdot Q_{init}
+  $$
+* **Perseveration ($pers$):** If the prediction error is negative ($\delta < 0$), the learning rate is reduced:
+  $$
+  \alpha_{adjusted} = \alpha \cdot (1 - pers)
+  $$
+* **Lapse Rate / Undirected Noise ($\epsilon$):** A proportion of trials are chosen uniformly at random.
+* **Initial Bias ($init$):** Upon the first encounter with a stimulus, the chosen action's Q-value is boosted:
+  $$
+  Q_{init\_updated}(s, a) = Q_{init} + init \cdot (1 - Q_{init})
+  $$
 ---
 
 ## 🛠️ Code Structure & Usage
