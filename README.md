@@ -1,2 +1,15 @@
-# RLWM-model-analysis
-This model was tested for RLWM-Simon task which is available  in my another repository.
+# rlwm
+
+Reinforcement Learning and Working Memory models
+
+
+## Dependencies
+
+Tested on Debian Bookworm:
+
+python3.9
+libblas-dev 
+liblapack-dev 
+gfortran
+
+Can also run in Python 3.10, but needs numpy=1.21.0

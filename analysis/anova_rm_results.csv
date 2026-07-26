@@ -1,0 +1,4 @@
+,F Value,Num DF,Den DF,Pr > F,partial_eta_sq
+Block,21.60209,1.0,35.0,4.6e-05,0.381648
+congruency,21.881842,1.0,35.0,4.2e-05,0.384689
+Block:congruency,71.026925,1.0,35.0,0.0,0.669895
