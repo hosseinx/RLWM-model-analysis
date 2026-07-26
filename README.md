@@ -78,18 +78,24 @@ $$
 ### 4. Auxiliary Mechanisms
 
 * **Forgetting/Decay ($\phi$):** Values decay towards their initial state before each trial update:
+* 
   $$
   Q_{t}(s, a) = (1 - \phi) \cdot Q_{t-1}(s, a) + \phi \cdot Q_{init}
   $$
+  
 * **Perseveration ($pers$):** If the prediction error is negative ($\delta < 0$), the learning rate is reduced:
+
   $$
   \alpha_{adjusted} = \alpha \cdot (1 - pers)
   $$
+  
 * **Lapse Rate / Undirected Noise ($\epsilon$):** A proportion of trials are chosen uniformly at random.
 * **Initial Bias ($init$):** Upon the first encounter with a stimulus, the chosen action's Q-value is boosted:
+* 
   $$
   Q_{init\_updated}(s, a) = Q_{init} + init \cdot (1 - Q_{init})
   $$
+  
 ---
 
 ## 🛠️ Code Structure & Usage
