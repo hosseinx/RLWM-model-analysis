@@ -62,7 +62,7 @@ $$ P(a|s) = \eta_{bs} \cdot \text{softmax}(W, \beta) + (1 - \eta_{bs}) \cdot \te
 
 ## 🛠️ Code Structure & Usage
 
-The models are implemented in `src/models_collins.py` using an Object-Oriented approach with factory functions for easy instantiation.
+The models are implemented in `rlwm/models_collins.py` using an Object-Oriented approach with factory functions for easy instantiation.
 
 ### Instantiating the Models
 
